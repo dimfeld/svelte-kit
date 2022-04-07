@@ -69,9 +69,9 @@ export async function prerender({ config, entries, files, log }) {
 		read: (file) => readFileSync(join(config.kit.files.assets, file))
 	});
 
-	const server = new Server(manifest);
+	const fallback_server = new Server(manifest);
 
-	const rendered = await server.respond(new Request('http://sveltekit-prerender/[fallback]'), {
+	const rendered = await fallback_server.respond(new Request('http://sveltekit-prerender/[fallback]'), {
 		getClientAddress,
 		prerender: {
 			fallback: true,
@@ -87,6 +87,8 @@ export async function prerender({ config, entries, files, log }) {
 	if (!config.kit.prerender.enabled) {
 		return prerendered;
 	}
+
+	const server = new Server(manifest);
 
 	const error = normalise_error_handler(log, config.kit.prerender.onError);
 

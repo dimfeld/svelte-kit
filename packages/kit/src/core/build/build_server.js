@@ -89,7 +89,8 @@ export class Server {
 		}
 
 		if (!this.options.hooks) {
-			const module = await import(${s(hooks)});
+			const fallback = options.prerender && options.prerender.fallback;
+			const module = fallback ? {} : await import(${s(hooks)});
 			this.options.hooks = {
 				getSession: module.getSession || (() => ({})),
 				handle: module.handle || (({ event, resolve }) => resolve(event)),
